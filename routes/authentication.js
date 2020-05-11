@@ -40,12 +40,12 @@ authenticationRouter.post('/sign-up', (req, res, next) => {
     });
 });
 
-authenticationRouter.get('/sign-in', (req, res) => {
-  res.render('sign-in');
+authenticationRouter.get('/log-in', (req, res) => {
+  res.render('log-in');
 });
 
 
-authenticationRouter.post('/sign-in', (req, res, next) => {
+authenticationRouter.post('/log-in', (req, res, next) => {
   const name = req.body.name;
   const password = req.body.password;
 
@@ -72,9 +72,9 @@ authenticationRouter.post('/sign-in', (req, res, next) => {
     });
 });
 
-// authenticationRouter.post('/sign-out', (req, res) => {
-//   req.session.destroy();
-//   res.redirect('/');
-// });
+authenticationRouter.post('/sign-out', (req, res) => {
+  req.session.destroy();
+  res.redirect('/');
+});
 
 module.exports = authenticationRouter;

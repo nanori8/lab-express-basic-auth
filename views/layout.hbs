@@ -6,13 +6,27 @@
   </head>
   <body>
     <nav>
-      <a href="/">Home</a>
-      <a href="/authentication/sign-in">Sign In</a>
-      <a href="/authentication/sign-up">Sign Up</a>
-      {{!-- <a href="/authentication/sign-out">Sign out</a> --}}
-      <a href="/main">Funny image</a>
-      <a href="/private">Private access</a>
+     <a href="/">Home</a>
+      {{#if user}}
+        <a href="/profile">{{ user.name }}</a>
+        <form action="/authentication/sign-out" method="POST">
+          <button>Sign Out</button>
+        </form>
+      {{else}}
+        <a href="/authentication/log-in">Log In</a>
+        <a href="/authentication/sign-up">Sign Up</a>
+      {{/if}}
     </nav>
     {{{body}}}
   </body>
 </html>
+
+
+
+
+            {{!-- <a href="/">Home</a>
+      <a href="/authentication/log-in">Log In</a>
+      <a href="/authentication/sign-up">Sign Up</a>
+      <a href="/authentication/sign-out">Sign out</a>
+      <a href="/main">Funny image</a>
+      <a href="/private">Private access</a> --}}
