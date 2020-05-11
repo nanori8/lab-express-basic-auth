@@ -18,8 +18,8 @@ const authenticationRouter  = require('./routes/authentication');
 const app = express();
 
 const mongoStore = connectMongo(expressSessions)
-
 const routeGuard = require('./middleware/route-guard');
+
 
 // Setup view engine
 app.set('views', join(__dirname, 'views'));
@@ -69,6 +69,15 @@ app.use('/authentication', authenticationRouter);
 app.get('/profile', routeGuard, (req, res) => {
   console.log('im running')
   res.render('profile');
+});
+
+
+app.get('/main', routeGuard,  (req, res) => {
+  res.render('main');
+});
+
+app.get('/private', routeGuard,  (req, res) => {
+  res.render('private');
 });
 
 

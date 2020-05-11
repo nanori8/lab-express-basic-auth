@@ -1,8 +1,11 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('./../models/user');
+const app = express();
+// const routeGuard = require('./middleware/route-guard');
 
 const authenticationRouter = new express.Router();
+
 
 authenticationRouter.get('/sign-up', (req, res) => {
   res.render('sign-up');
@@ -69,9 +72,9 @@ authenticationRouter.post('/sign-in', (req, res, next) => {
     });
 });
 
-authenticationRouter.post('/sign-out', (req, res) => {
-  req.session.destroy();
-  res.redirect('/');
-});
+// authenticationRouter.post('/sign-out', (req, res) => {
+//   req.session.destroy();
+//   res.redirect('/');
+// });
 
 module.exports = authenticationRouter;
