@@ -13,14 +13,13 @@ authenticationRouter.post('/sign-up', (req, res, next) => {
   const password = req.body.password;
 
   if (password.length === 0){
-      next(new Error('PASSWORD CANNOT BE EMPTY'))
+      next(new Error("Password can't be empty"))
       return
   }
 
   bcrypt
     .hash(password, 10)
     .then(hashAndSalt => {
-        //console.log("Hash pass", hashAndSalt)
       return User.create({
         name,
         passwordHashAndSalt: hashAndSalt
@@ -35,13 +34,13 @@ authenticationRouter.post('/sign-up', (req, res, next) => {
     .catch(error => {
         console.log(error);
         next(error);
-        //return Promise.reject(new Error('VERIFY USER OR PASSWORD'));
     });
 });
 
 authenticationRouter.get('/sign-in', (req, res) => {
   res.render('sign-in');
 });
+
 
 authenticationRouter.post('/sign-in', (req, res, next) => {
   const name = req.body.name;
@@ -60,9 +59,9 @@ authenticationRouter.post('/sign-in', (req, res, next) => {
       if (comparison) {
         // Serializing the user
         req.session.userId = user._id;
-        res.redirect('/');
+        res.redirect('/profile');
       } else {
-        return Promise.reject(new Error('PASSWORD_DOES_NOT_MATCH'));
+        return Promise.reject(new Error("Password don't match"));
       }
     })
     .catch(error => {

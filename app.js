@@ -8,6 +8,10 @@ const expressSessions = require('express-session')
 const connectMongo = require("connect-mongo")
 const mongoose = require('mongoose')
 
+const bindUserToResponseLocal = require('./middleware/bind-user-to-response-local')
+const deserializeUser = require('./middleware/deserialize-user')
+
+
 const indexRouter = require('./routes/index');
 const authenticationRouter  = require('./routes/authentication');
 
@@ -15,12 +19,16 @@ const app = express();
 
 const mongoStore = connectMongo(expressSessions)
 
+const routeGuard = require('./middleware/route-guard');
+
 // Setup view engine
 app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 app.use(express.static(join(__dirname, 'public')));
 app.use(serveFavicon(join(__dirname, 'public/images', 'favicon.ico')));
+
+
 
 app.use(expressSessions({
   secret:"AlineAndSantiAreSimplyTheBestAndIllNameMyBabyBoySanti",
@@ -34,6 +42,9 @@ app.use(expressSessions({
     ttl: 60*60
   })
 }));
+
+app.use(deserializeUser)
+app.use(bindUserToResponseLocal)
 
 
 app.use(logger('dev'));
@@ -50,6 +61,16 @@ app.use(
 
 app.use('/', indexRouter);
 app.use('/authentication', authenticationRouter);
+
+
+//app.use('/authentication', authenticationRouter);
+
+
+app.get('/profile', routeGuard, (req, res) => {
+  console.log('im running')
+  res.render('profile');
+});
+
 
 // Catch missing routes and forward to error handler
 app.use((req, res, next) => {
