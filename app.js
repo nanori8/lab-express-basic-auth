@@ -4,10 +4,16 @@ const createError = require('http-errors');
 const logger = require('morgan');
 const sassMiddleware = require('node-sass-middleware');
 const serveFavicon = require('serve-favicon');
+const expressSessions = require('express-session')
+const connectMongo = require("connect-mongo")
+const mongoose = require('mongoose')
 
 const indexRouter = require('./routes/index');
+const authenticationRouter  = require('./routes/authentication');
 
 const app = express();
+
+const mongoStore = connectMongo(expressSessions)
 
 // Setup view engine
 app.set('views', join(__dirname, 'views'));
@@ -15,6 +21,20 @@ app.set('view engine', 'hbs');
 
 app.use(express.static(join(__dirname, 'public')));
 app.use(serveFavicon(join(__dirname, 'public/images', 'favicon.ico')));
+
+app.use(expressSessions({
+  secret:"AlineAndSantiAreSimplyTheBestAndIllNameMyBabyBoySanti",
+  resave: true,
+  saveUninitialized: false,
+  cookie:{
+    maxAge: 15*24*60*60*1000
+  },
+  store: new mongoStore({
+    mongooseConnection: mongoose.connection,
+    ttl: 60*60
+  })
+}));
+
 
 app.use(logger('dev'));
 app.use(express.urlencoded({ extended: false }));
@@ -29,10 +49,19 @@ app.use(
 );
 
 app.use('/', indexRouter);
+app.use('/authentication', authenticationRouter);
 
 // Catch missing routes and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
+});
+
+// Catch all error handler
+
+app.use((error, req, res, next) => {
+  // console.log('Got to catch all error handler', error);´
+  console.log(error)
+  res.render('error', { error });
 });
 
 // Catch all error handler
